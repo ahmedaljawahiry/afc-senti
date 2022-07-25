@@ -1,3 +1,5 @@
+import random
+
 from fastapi import FastAPI, WebSocket
 
 app = FastAPI()
@@ -8,5 +10,5 @@ async def ws(websocket: WebSocket):
     await websocket.accept()
 
     while True:
-        data = await websocket.receive_text()
-        await websocket.send_text(f"Message text was: {data}")
+        number = random.randint(0, 2000)
+        await websocket.send_text(f"{number}")
