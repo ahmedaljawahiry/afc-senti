@@ -15,6 +15,7 @@ function openConnection({ onMessage }: OpenConnectionArgs): WebSocket {
   if (onMessage) {
     ws.onmessage = onMessage;
   }
+  console.log(`Connected to ${WS_ENDPOINT}`);
   return ws;
 }
 
@@ -33,8 +34,6 @@ function closeConnection(ws: CloseConnectionArgs) {
 export default function useWebSocketData<T>() {
   const [ws, setWS] = useState<WebSocket>();
   const [data, setData] = useState<T>();
-
-  const status = ws?.readyState || WebSocket.CLOSED;
 
   useEffect(() => {
     return () => {
@@ -62,7 +61,7 @@ export default function useWebSocketData<T>() {
 
   return {
     data,
-    status,
+    status: ws?.readyState || WebSocket.CLOSED,
     start,
     stop,
   };
