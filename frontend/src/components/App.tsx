@@ -1,29 +1,48 @@
 import useWebSocketData from "../websocket";
+import { useState } from "react";
+
+import Tweet from "./Tweet";
+import ConnectButton from "./ConnectButton";
+
+type InfoMessage = {
+  type: "info";
+  text: string;
+};
+
+type TweetMessage = {
+  type: "tweet";
+  data: {
+    tweet: { text: string; id: string };
+  };
+};
+
+type Message = InfoMessage | TweetMessage;
 
 export default function App() {
-  const { data, start, stop, status } = useWebSocketData<string>();
+  const [lastTweet, setLastTweet] = useState<string>();
 
-  const isOpen = status === WebSocket.OPEN;
-  const isLoading = [WebSocket.CLOSING, WebSocket.CONNECTING].includes(status);
+  const { start, stop, status } = useWebSocketData<Message>({
+    onMessage: (data) => {
+      if (data.type === "info") {
+        console.log(data.text);
+      } else if (data.type === "tweet") {
+        setLastTweet(data.data.tweet.text);
+      }
+    },
+  });
 
   return (
     <div className="bg-black h-screen w-full flex justify-center items-center">
-      <div className="flex flex-col items-center space-y-10">
-        <p className="text-white">{status}</p>
-        <button
-          disabled={isLoading}
-          onClick={isOpen ? stop : start}
-          className={`px-6 py-2 text-lg text-white disabled:bg-gray-500 rounded ${
-            isOpen ? "bg-red-700" : "bg-green-700"
-          }`}
-        >
-          {isOpen ? "Stop" : "Start"}
-        </button>
-        <div
-          className={`text-3xl ${isOpen ? "text-green-700" : "text-red-700"}`}
-        >
-          {data}
+      <div className="flex flex-col h-full justify-between items-center p-52">
+        <div className="space-y-10 p-4">
+          <ConnectButton status={status} start={start} stop={stop} />
         </div>
+        <div className="flex justify-between space-x-10">
+          <div className="text-6xl">😡</div>
+          <div className="bg-white w-96 rounded" />
+          <div className="text-6xl">🙂</div>
+        </div>
+        <Tweet text={lastTweet} isLoading={status === WebSocket.CONNECTING} />
       </div>
     </div>
   );
