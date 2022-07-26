@@ -2,6 +2,7 @@ type Color = "red" | "green";
 type Direction = "positive" | "negative";
 
 type CityProps = {
+  data: Array<number>;
   color?: Color;
   direction?: Direction;
 };
@@ -9,6 +10,7 @@ type CityProps = {
 const colorScale: Record<Color, string[]> = {
   // type manually so tailwind parses these colours
   red: [
+    "bg-gray-600",
     "bg-gray-500",
     "bg-red-200",
     "bg-red-300",
@@ -20,6 +22,7 @@ const colorScale: Record<Color, string[]> = {
     "bg-red-900",
   ],
   green: [
+    "bg-gray-600",
     "bg-gray-500",
     "bg-green-200",
     "bg-green-300",
@@ -35,12 +38,14 @@ const colorScale: Record<Color, string[]> = {
 export default function HeatCity({
   color = "green",
   direction = "positive",
+  data,
 }: CityProps) {
   let colors = colorScale[color];
   let classes = "items-end";
   let towerClasses = "flex flex-wrap-reverse pt-2";
 
   if (direction === "negative") {
+    // todo: bug - scores are also reversing atm
     colors = [...colors].reverse();
     classes = "items-start translate-y-full";
     towerClasses = "flex flex-wrap pb-2";
@@ -48,10 +53,10 @@ export default function HeatCity({
 
   return (
     <div className={`w-96 rounded flex flex-row justify-center ${classes}`}>
-      {colors.map((variant) => (
+      {colors.map((variant, index) => (
         <Tower
           color={variant}
-          density={30}
+          density={data[index]}
           key={variant}
           className={towerClasses}
         />
