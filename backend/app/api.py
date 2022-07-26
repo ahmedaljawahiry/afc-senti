@@ -4,7 +4,7 @@ import logging
 
 from starlette.websockets import WebSocketDisconnect
 
-from . import twitter
+from . import twitter, sentiment
 
 from fastapi import FastAPI, WebSocket
 
@@ -18,15 +18,22 @@ def message_info(text: str) -> dict:
     return {"type": "info", "text": text}
 
 
-def message_tweet(tweet: twitter.Tweet) -> dict:
+def message_tweet(tweet: twitter.Tweet, sentiment_scores: dict) -> dict:
     """Creates a Tweet message object, in the correct format"""
-    return {"type": "tweet", "data": {"tweet": {"text": tweet.text, "id": tweet.id}}}
+    return {
+        "type": "tweet",
+        "data": {
+            "tweet": {"text": tweet.text, "id": tweet.id},
+            "sentiment": sentiment_scores,
+        },
+    }
 
 
 async def tweet_to_ws(tweet: twitter.Tweet, websocket: WebSocket):
     """Sends the Tweet through the Websocket"""
     LOGGER.info(f"Received Tweet: {tweet.id}")
-    await websocket.send_json(message_tweet(tweet))
+    sentiment_scores = sentiment.score(tweet.text)
+    await websocket.send_json(message_tweet(tweet, sentiment_scores))
 
 
 @app.websocket("/ws")

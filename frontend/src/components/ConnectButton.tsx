@@ -4,15 +4,15 @@ type Props = {
   stop: () => void;
 };
 
+const textLookup = {
+  [WebSocket.OPEN]: "Stop",
+  [WebSocket.CLOSED]: "Go",
+  [WebSocket.CONNECTING]: "Waiting...",
+  [WebSocket.CLOSING]: "Closing",
+};
+
 export default function ConnectButton({ status, start, stop }: Props) {
   const isOpen = status === WebSocket.OPEN;
-
-  const textLookup = {
-    [WebSocket.OPEN]: "Stop",
-    [WebSocket.CLOSED]: "Go",
-    [WebSocket.CONNECTING]: "Waiting...",
-    [WebSocket.CLOSING]: "Closing",
-  };
 
   return (
     <div className="space-y-10 p-4">
