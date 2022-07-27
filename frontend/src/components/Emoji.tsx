@@ -4,9 +4,11 @@ type Props = {
 };
 
 export default function Emoji({ value, score }: Props) {
-  const shouldShake =
-    (score && score && value === "🙂" && score > 0) ||
-    (score && value === "😡" && score < 0);
+  let shouldShake = false;
+  if (score !== undefined) {
+    shouldShake =
+      score === 0 || (score && value === "🙂") || (value === "😡" && score < 0);
+  }
 
   return (
     <div className={`text-6xl ${shouldShake ? "shake" : ""}`}>{value}</div>
