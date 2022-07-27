@@ -8,8 +8,8 @@ from tweepy.asynchronous import AsyncStreamingClient
 
 LOGGER = logging.getLogger(__name__)
 
-RULE_VALUE = "arteta lang:en -is:retweet"
-RULE_TAG = "arteta tweets"
+RULE_VALUE = "arsenal lang:en -is:retweet"
+RULE_TAG = "arsenal tweets"
 
 STREAMING_RULES = [StreamRule(value=RULE_VALUE, tag=RULE_TAG)]
 
