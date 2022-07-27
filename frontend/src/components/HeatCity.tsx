@@ -45,9 +45,7 @@ export default function HeatCity({
   let towerClasses = "flex flex-wrap-reverse pt-2";
 
   if (direction === "negative") {
-    // todo: bug - scores are also reversing atm
-    colors = [...colors].reverse();
-    classes = "items-start translate-y-full";
+    classes = "items-start translate-y-full flex-row-reverse";
     towerClasses = "flex flex-wrap pb-2";
   }
 

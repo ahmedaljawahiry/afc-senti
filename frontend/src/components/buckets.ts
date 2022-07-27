@@ -1,7 +1,9 @@
 import { useState } from "react";
 
+const MAX_SIZE = 10;
+
 export default function useBucket() {
-  const [bucket, setBuckets] = useState<Array<number>>(Array(10).fill(0));
+  const [bucket, setBuckets] = useState<Array<number>>(Array(MAX_SIZE).fill(0));
 
   function addToBucket(no: number) {
     const _number = Math.abs(no);
@@ -16,5 +18,9 @@ export default function useBucket() {
     }
   }
 
-  return { bucket, addToBucket, reset: () => setBuckets(Array(10).fill(0)) };
+  return {
+    bucket,
+    addToBucket,
+    reset: () => setBuckets(Array(MAX_SIZE).fill(0)),
+  };
 }

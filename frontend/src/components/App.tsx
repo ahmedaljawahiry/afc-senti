@@ -5,6 +5,7 @@ import Tweet from "./Tweet";
 import ConnectButton from "./ConnectButton";
 import HeatCity from "./HeatCity";
 import useBucket from "./buckets";
+import Emoji from "./Emoji";
 
 type InfoMessage = {
   type: "info";
@@ -18,19 +19,20 @@ type PolarityScore = {
   neg: number;
   compound: number;
 };
+type TweetData = {
+  tweet: Tweet;
+  sentiment: PolarityScore;
+};
 
 type TweetMessage = {
   type: "tweet";
-  data: {
-    tweet: Tweet;
-    sentiment: PolarityScore;
-  };
+  data: TweetData;
 };
 
 type Message = InfoMessage | TweetMessage;
 
 export default function App() {
-  const [lastTweet, setLastTweet] = useState<string>();
+  const [lastTweetData, setLastTweetData] = useState<TweetData>();
 
   const {
     bucket: happy,
@@ -45,7 +47,7 @@ export default function App() {
       if (data.type === "info") {
         console.log(data.text);
       } else if (data.type === "tweet") {
-        setLastTweet(data.data.tweet.text);
+        setLastTweetData(data.data);
         console.log(data.data.sentiment);
 
         const score = data.data.sentiment.compound;
@@ -62,14 +64,25 @@ export default function App() {
     <div className="bg-black min-h-screen w-full flex justify-center overflow-y-scroll pt-8">
       <div className="flex flex-col h-full w-full justify-between items-center px-52 space-y-24">
         <ConnectButton status={status} start={start} stop={stop} />
-        <Tweet text={lastTweet} isLoading={status === WebSocket.CONNECTING} />
+        <Tweet
+          text={lastTweetData?.tweet.text}
+          isLoading={status === WebSocket.CONNECTING}
+        />
         <div className="flex justify-between items-center w-full space-x-10">
-          <div className="text-6xl">😡</div>
+          <Emoji
+            value={"😡"}
+            score={lastTweetData?.sentiment.compound}
+            key={`sad-${lastTweetData?.tweet.id}`}
+          />
           <div className="flex gap-3">
             <HeatCity color="red" direction="negative" data={sad} />
             <HeatCity color="green" direction="positive" data={happy} />
           </div>
-          <div className="text-6xl">🙂</div>
+          <Emoji
+            value={"🙂"}
+            score={lastTweetData?.sentiment.compound}
+            key={`happy-${lastTweetData?.tweet.id}`}
+          />
         </div>
       </div>
     </div>
