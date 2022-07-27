@@ -1,10 +1,11 @@
-import useWebSocketData from "../websocket";
 import { useState } from "react";
+
+import useWebSocketData from "../hooks/websocket";
+import useBucket from "../hooks/buckets";
 
 import Tweet from "./Tweet";
 import ConnectButton from "./ConnectButton";
 import HeatCity from "./HeatCity";
-import useBucket from "./buckets";
 import Emoji from "./Emoji";
 
 type InfoMessage = {
